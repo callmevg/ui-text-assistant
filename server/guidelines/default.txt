@@ -1,0 +1,12 @@
+This file contains the default writing style guidelines in text format.
+
+Use clear and concise language.
+Avoid jargon and technical terms unless necessary.
+Maintain a friendly and approachable tone.
+Use active voice whenever possible.
+Be consistent with terminology and formatting.
+Break up large blocks of text for better readability.
+Use bullet points or numbered lists for clarity.
+Ensure proper grammar and punctuation.
+Tailor the content to the target audience's level of understanding.
+Provide examples where applicable to illustrate points.
