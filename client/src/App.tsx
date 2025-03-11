@@ -80,11 +80,18 @@ function App() {
         }))
       ];
       
-      // Make sure endpoint URL ends with a trailing slash if needed
-      const apiEndpoint = endpoint.endsWith('/') ? endpoint : `${endpoint}/`;
+      // Properly format the endpoint URL - remove any trailing slashes
+      let apiEndpoint = endpoint;
+      if (apiEndpoint.endsWith('/')) {
+        apiEndpoint = apiEndpoint.slice(0, -1);
+      }
       
-      // Make API call to Azure OpenAI
-      const response = await fetch(`${apiEndpoint}openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`, {
+      // Construct the correct URL for Azure OpenAI
+      const apiUrl = `${apiEndpoint}/openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`;
+      
+      console.log('API URL:', apiUrl); // Debug log
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,21 +103,21 @@ function App() {
           temperature: 0.7,
           top_p: 0.95,
           frequency_penalty: 0,
-          presence_penalty: 0,
-          stop: null
+          presence_penalty: 0
         })
       });
       
-      // Better error handling
+      // Improved error handling
       if (!response.ok) {
         const contentType = response.headers.get('content-type');
+        
         if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
-          throw new Error(errorData.error?.message || 'Failed to get response from Azure');
+          throw new Error(`${response.status}: ${errorData.error?.message || JSON.stringify(errorData)}`);
         } else {
-          // If not JSON, get the text content to show a more useful error
+          // Handle XML or text error responses
           const errorText = await response.text();
-          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 100)}...`);
+          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 200)}...`);
         }
       }
       
