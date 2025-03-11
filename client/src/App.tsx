@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import './App.css';
+import { Prism as SyntaxHighlighter, SyntaxHighlighterProps } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function App() {
   // States for API settings
@@ -521,7 +525,38 @@ function App() {
                 ) : (
                   getActiveChat()?.messages.map((msg, index) => (
                     <div key={index} className={`message ${msg.role}`}>
-                      <div className="message-content">{msg.content}</div>
+                      <div className="message-content">
+                        {msg.role === 'assistant' ? (
+                          <div className="markdown-content">
+                            <ReactMarkdown 
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                code({ node, className, children, ...props }) {
+                                  const match = /language-(\w+)/.exec(className || '');
+                                  return match ? (
+                                    <SyntaxHighlighter
+                                      style={tomorrow as any}
+                                      language={match[1]}
+                                      PreTag="div"
+                                      {...(props as SyntaxHighlighterProps)}
+                                    >
+                                      {String(children).replace(/\n$/, '')}
+                                    </SyntaxHighlighter>
+                                  ) : (
+                                    <code className={className} {...props}>
+                                      {children}
+                                    </code>
+                                  );
+                                }
+                              }}
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                          </div>
+                        ) : (
+                          msg.content
+                        )}
+                      </div>
                     </div>
                   ))
                 )}
