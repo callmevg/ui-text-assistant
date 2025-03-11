@@ -67,12 +67,6 @@ function App() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if there's an active chat
-    if (!activeChatId) {
-      createNewChat();
-      return;
-    }
-    
     // Check if API settings are configured
     if (!apiKey || !endpoint || !endpointName) {
       setError('Please configure your Azure API settings in the Settings tab before sending messages.');
@@ -80,12 +74,129 @@ function App() {
       return;
     }
     
+    // Create a new chat if none is active
+    if (!activeChatId) {
+      // Create a new chat with the first message already included
+      const newChatId = generateId();
+      const firstMessage = {role: 'user', content: message};
+      
+      // Use the first few words of the user's message as the title
+      const defaultTitle = message.split(' ').slice(0, 3).join(' ') + '...';
+      
+      const newChat = {
+        id: newChatId,
+        title: defaultTitle,
+        messages: [firstMessage],
+        createdAt: Date.now()
+      };
+      
+      const updatedChats = [...chats, newChat];
+      setChats(updatedChats);
+      setActiveChatId(newChatId);
+      localStorage.setItem('chats', JSON.stringify(updatedChats));
+      
+      // Continue with API call using this new chat
+      const newMessages = [firstMessage];
+      setMessage('');
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Prepare guidelines text and API call with the first message
+        // Rest of your API call logic...
+        const guidelinesText = guidelines.length > 0 
+          ? guidelines.map(g => `${g.name}:\n${g.content}`).join('\n\n')
+          : 'No specific guidelines provided.';
+        
+        // Prepare the conversation history
+        const messages = [
+          {
+            role: "system",
+            content: `You are an AI assistant that helps generate and improve UI text. 
+            Consider these writing style guidelines when creating your responses:
+            
+            ${guidelinesText}`
+          },
+          ...newMessages.map(msg => ({
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          }))
+        ];
+        
+        // Clean the endpoint URL (remove trailing slash)
+        let apiEndpoint = endpoint.trim();
+        if (apiEndpoint.endsWith('/')) {
+          apiEndpoint = apiEndpoint.slice(0, -1);
+        }
+        
+        // Call the API
+        const apiUrl = `${apiEndpoint}/openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`;
+        
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'api-key': apiKey
+          },
+          body: JSON.stringify({
+            messages: messages,
+            max_tokens: 800,
+            temperature: 0.7
+          })
+        });
+        
+        if (!response.ok) {
+          // Your existing error handling code
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            throw new Error(`${response.status}: ${errorData.error?.message || JSON.stringify(errorData)}`);
+          } else {
+            const errorText = await response.text();
+            throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 200)}...`);
+          }
+        }
+        
+        const data = await response.json();
+        const assistantReply = data.choices[0].message.content;
+        
+        // Add assistant's reply to chat history
+        const updatedMessagesWithReply = [...newMessages, {
+          role: 'assistant',
+          content: assistantReply
+        }];
+        
+        // Update the newly created chat with the AI response
+        const finalUpdatedChats = updatedChats.map(chat => 
+          chat.id === newChatId ? { ...chat, messages: updatedMessagesWithReply } : chat
+        );
+        
+        setChats(finalUpdatedChats);
+        localStorage.setItem('chats', JSON.stringify(finalUpdatedChats));
+        
+      } catch (err) {
+        console.error('Error calling Azure API:', err);
+        setError(`Failed to get response: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      } finally {
+        setIsLoading(false);
+      }
+      
+      return; // Exit after handling the first message
+    }
+    
+    // For existing chats, proceed with the normal flow
     const activeChat = getActiveChat();
     if (!activeChat) return;
     
     // Add user message to chat history
     const newMessages = [...activeChat.messages, {role: 'user', content: message}];
-    updateActiveChatMessages(newMessages);
+    
+    // Update the active chat with the new message immediately
+    const updatedChats = chats.map(chat => 
+      chat.id === activeChatId ? { ...chat, messages: newMessages } : chat
+    );
+    setChats(updatedChats);
+    localStorage.setItem('chats', JSON.stringify(updatedChats));
     
     // Clear message input and set loading state
     setMessage('');
@@ -93,7 +204,7 @@ function App() {
     setError(null);
     
     try {
-      // Prepare guidelines text
+      // Rest of your existing API call code for subsequent messages
       const guidelinesText = guidelines.length > 0 
         ? guidelines.map(g => `${g.name}:\n${g.content}`).join('\n\n')
         : 'No specific guidelines provided.';
@@ -119,7 +230,7 @@ function App() {
         apiEndpoint = apiEndpoint.slice(0, -1);
       }
       
-      // Call the API (rest of your existing API call code)
+      // Call the API
       const apiUrl = `${apiEndpoint}/openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`;
       
       const response = await fetch(apiUrl, {
@@ -151,20 +262,18 @@ function App() {
       const assistantReply = data.choices[0].message.content;
       
       // Add assistant's reply to chat history
-      const updatedMessages = [...newMessages, {
+      const updatedMessagesWithReply = [...newMessages, {
         role: 'assistant',
         content: assistantReply
       }];
       
-      // Update the active chat with the new messages
-      updateActiveChatMessages(updatedMessages);
+      // Update the chat with both the user message and AI response
+      const finalUpdatedChats = updatedChats.map(chat => 
+        chat.id === activeChatId ? { ...chat, messages: updatedMessagesWithReply } : chat
+      );
       
-      // Update chat title if it's the default title and this is the first message
-      if (activeChat.title.startsWith('Chat ') && activeChat.messages.length === 0) {
-        // Use the first few words of the user's message as the title
-        const defaultTitle = message.split(' ').slice(0, 3).join(' ') + '...';
-        renameChat(activeChatId, defaultTitle);
-      }
+      setChats(finalUpdatedChats);
+      localStorage.setItem('chats', JSON.stringify(finalUpdatedChats));
       
     } catch (err) {
       console.error('Error calling Azure API:', err);
@@ -245,7 +354,7 @@ function App() {
   const createNewChat = () => {
     const newChat = {
       id: generateId(),
-      title: `Chat ${chats.length + 1}`,
+      title: `New Chat ${chats.length + 1}`,
       messages: [],
       createdAt: Date.now()
     };
@@ -253,7 +362,6 @@ function App() {
     const updatedChats = [...chats, newChat];
     setChats(updatedChats);
     setActiveChatId(newChat.id);
-    setMessage('');
     
     // Save to localStorage
     localStorage.setItem('chats', JSON.stringify(updatedChats));
@@ -319,7 +427,10 @@ function App() {
           <div className="sidebar-header">
             <h2>Your Chats</h2>
             <button className="new-chat-btn" onClick={createNewChat}>
-              + New Chat
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              New Chat
             </button>
           </div>
           
