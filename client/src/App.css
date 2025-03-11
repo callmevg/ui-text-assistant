@@ -79,6 +79,11 @@ header h1 {
   letter-spacing: -0.025em;
 }
 
+/* Add this new style to emphasize "WE" in the title */
+header h1 .emphasis {
+  font-weight: 700;
+}
+
 .tab-navigation {
   display: flex;
   background-color: #ffffff;

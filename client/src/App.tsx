@@ -424,7 +424,7 @@ function App() {
             <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1>UI Text Assistant</h1>
+        <h1><span className="emphasis">WE</span> Write</h1>
         <button className="settings-toggle" title="Toggle Settings" onClick={() => setActiveTab(activeTab === 'settings' ? 'chat' : 'settings')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -593,7 +593,6 @@ function App() {
                 Back to Chat
               </button>
               <h2>API Settings</h2>
-              
               <h2>Azure API Settings</h2>
               <div className="form-group">
                 <label>API Key</label>
