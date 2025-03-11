@@ -2,7 +2,11 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+<<<<<<< HEAD
   "homepage": "https://ms-vaibgupta.github.io/rewrite",
+=======
+  "homepage": "http://ms-vaibgupta.github.io/rewrite",
+>>>>>>> 354a8d97acbfdc7eeb31ede5d6cb039fc3dcfac6
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
