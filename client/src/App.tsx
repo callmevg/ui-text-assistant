@@ -94,7 +94,8 @@ function App() {
         createdAt: Date.now()
       };
       
-      const updatedChats = [...chats, newChat];
+      // Add to beginning of the array
+      const updatedChats = [newChat, ...chats];
       setChats(updatedChats);
       setActiveChatId(newChatId);
       localStorage.setItem('chats', JSON.stringify(updatedChats));
@@ -363,7 +364,8 @@ function App() {
       createdAt: Date.now()
     };
     
-    const updatedChats = [...chats, newChat];
+    // Add new chat to the beginning of the array instead of the end
+    const updatedChats = [newChat, ...chats];
     setChats(updatedChats);
     setActiveChatId(newChat.id);
     
@@ -437,7 +439,7 @@ function App() {
         {/* Sidebar */}
         <div className={`chat-sidebar ${showSidebar ? 'open' : 'closed'}`}>
           <div className="sidebar-header">
-            <h2>Your Chats</h2>
+            <h2>Chats</h2>
             <button className="new-chat-btn" onClick={createNewChat}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -450,6 +452,7 @@ function App() {
             {chats.length === 0 ? (
               <div className="empty-chats">No chats yet</div>
             ) : (
+              // No need to sort if always adding to beginning, but making it explicit for clarity
               chats.map(chat => (
                 <div 
                   key={chat.id} 

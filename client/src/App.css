@@ -193,9 +193,10 @@ input:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 16px;
   border-bottom: 1px solid #e5e7eb;
   background-color: #ffffff;
+  height: 56px; /* Fixed height to match sidebar header */
 }
 
 .chat-header h2 {
@@ -607,6 +608,7 @@ button[type="submit"]:disabled {
   justify-content: space-between;
   align-items: center;
   background-color: #f9fafb;
+  height: 56px; /* Match the height to chat-header */
 }
 
 .sidebar-header h2 {
