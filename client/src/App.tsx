@@ -80,8 +80,11 @@ function App() {
         }))
       ];
       
+      // Make sure endpoint URL ends with a trailing slash if needed
+      const apiEndpoint = endpoint.endsWith('/') ? endpoint : `${endpoint}/`;
+      
       // Make API call to Azure OpenAI
-      const response = await fetch(`${endpoint}/openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`, {
+      const response = await fetch(`${apiEndpoint}openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,9 +101,17 @@ function App() {
         })
       });
       
+      // Better error handling
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || 'Failed to get response from Azure');
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          throw new Error(errorData.error?.message || 'Failed to get response from Azure');
+        } else {
+          // If not JSON, get the text content to show a more useful error
+          const errorText = await response.text();
+          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 100)}...`);
+        }
       }
       
       const data = await response.json();
@@ -220,22 +231,23 @@ function App() {
             />
           </div>
           <div className="form-group">
-            <label>Endpoint Name</label>
+            <label>Deployment Name <span className="label-hint">(model deployment name)</span></label>
             <input 
               type="text" 
               value={endpointName} 
               onChange={(e) => setEndpointName(e.target.value)}
-              placeholder="Enter your Azure endpoint name"
+              placeholder="e.g., gpt-4o or your-deployment-name"
             />
           </div>
           <div className="form-group">
-            <label>Endpoint URL</label>
+            <label>Endpoint URL <span className="label-hint">(from Azure portal)</span></label>
             <input 
               type="text" 
               value={endpoint} 
               onChange={(e) => setEndpoint(e.target.value)}
-              placeholder="Enter your Azure endpoint URL"
+              placeholder="https://your-resource-name.openai.azure.com"
             />
+            <div className="field-help">Format: https://your-resource-name.openai.azure.com</div>
           </div>
           <button className="save-button" onClick={handleSaveSettings}>Save Settings</button>
           
