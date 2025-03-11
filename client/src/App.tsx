@@ -5,6 +5,26 @@ import './App.css';
 import { Prism as SyntaxHighlighter, SyntaxHighlighterProps } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+// Add the Message interface here
+interface Message {
+  role: string;
+  content: string;
+  thinking?: string;
+  feedback?: {
+    rating?: 'positive' | 'negative' | null;
+    comments?: string;
+    timestamp?: number;
+  };
+}
+
+// Add interfaces for the chat structure
+interface Chat {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: number;
+}
+
 function App() {
   // States for API settings
   const [apiKey, setApiKey] = useState('');
@@ -17,7 +37,7 @@ function App() {
   
   // Chat states
   const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<Array<{role: string, content: string}>>([]);
+  const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -26,16 +46,29 @@ function App() {
 
   // Debug state
   const [showDebug, setShowDebug] = useState(false);
+  const [showThinking, setShowThinking] = useState(false);
 
   // New states for managing multiple chats and sidebar visibility
-  const [chats, setChats] = useState<Array<{
-    id: string;
-    title: string;
-    messages: Array<{role: string, content: string}>;
-    createdAt: number;
-  }>>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
+
+  // Add to your state variables
+  const [feedbackModal, setFeedbackModal] = useState({
+    isOpen: false,
+    messageIndex: -1,
+    comment: ''
+  });
+
+  // Add this function and call it once
+  const cleanLocalStorage = () => {
+    const chatsString = localStorage.getItem('chats');
+    if (chatsString && chatsString.includes('{getActiveChat()')) {
+      // Found corrupted data, remove it
+      localStorage.removeItem('chats');
+      window.location.reload(); // Reload the page
+    }
+  };
 
   // Load settings from local storage on component mount
   useEffect(() => {
@@ -61,6 +94,11 @@ function App() {
       // Create a default chat if none exists
       createNewChat();
     }
+  }, []);
+  
+  // Call this in a useEffect
+  useEffect(() => {
+    cleanLocalStorage();
   }, []);
   
   // Save chat history whenever it changes
@@ -418,6 +456,143 @@ function App() {
     localStorage.setItem('chats', JSON.stringify(updatedChats));
   };
 
+  // Add these functions to handle feedback
+  const handleFeedback = (messageIndex: number, rating: 'positive' | 'negative') => {
+    const chat = getActiveChat();
+    if (!chat) return;
+  
+    const updatedMessages = [...chat.messages];
+    const message = updatedMessages[messageIndex];
+    
+    // If same rating clicked, remove feedback
+    if (message.feedback?.rating === rating) {
+      updatedMessages[messageIndex] = {
+        ...message,
+        feedback: {
+          ...message.feedback,
+          rating: null
+        }
+      };
+    } else {
+      // Add or update feedback rating
+      updatedMessages[messageIndex] = {
+        ...message,
+        feedback: {
+          ...message.feedback || {},
+          rating: rating,
+          timestamp: Date.now()
+        }
+      };
+    }
+    
+    // Update the chat with the new feedback
+    const updatedChats = chats.map(c => 
+      c.id === activeChatId ? { ...c, messages: updatedMessages } : c
+    );
+    
+    setChats(updatedChats);
+    localStorage.setItem('chats', JSON.stringify(updatedChats));
+  };
+  
+  const openFeedbackModal = (messageIndex: number) => {
+    const chat = getActiveChat();
+    if (!chat) return;
+    
+    setFeedbackModal({
+      isOpen: true,
+      messageIndex,
+      comment: chat.messages[messageIndex].feedback?.comments || ''
+    });
+  };
+  
+  const saveFeedbackComment = () => {
+    const chat = getActiveChat();
+    if (!chat) return;
+    
+    const updatedMessages = [...chat.messages];
+    const message = updatedMessages[feedbackModal.messageIndex];
+    
+    updatedMessages[feedbackModal.messageIndex] = {
+      ...message,
+      feedback: {
+        ...message.feedback || {},
+        comments: feedbackModal.comment,
+        timestamp: Date.now()
+      }
+    };
+    
+    // Update the chat with the new feedback
+    const updatedChats = chats.map(c => 
+      c.id === activeChatId ? { ...c, messages: updatedMessages } : c
+    );
+    
+    setChats(updatedChats);
+    localStorage.setItem('chats', JSON.stringify(updatedChats));
+    setFeedbackModal({...feedbackModal, isOpen: false});
+  };
+
+  // Add this function to export chat with feedback
+  const exportChatWithFeedback = () => {
+    const chat = getActiveChat();
+    if (!chat) return;
+    
+    // Prepare the data for export
+    const exportData = {
+      chatId: chat.id,
+      title: chat.title,
+      createdAt: chat.createdAt,
+      exportedAt: Date.now(),
+      messages: chat.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+        feedback: msg.feedback || null
+      }))
+    };
+    
+    // Create the blob and download link
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-feedback-${chat.id.slice(0, 8)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Option for CSV format export
+  const exportChatAsCSV = () => {
+    const chat = getActiveChat();
+    if (!chat) return;
+    
+    // CSV headers
+    let csvContent = "Message Role,Message Content,Feedback Rating,Feedback Comments,Feedback Timestamp\n";
+    
+    // Add each message as a row
+    chat.messages.forEach(msg => {
+      const role = msg.role;
+      // Escape quotes in content
+      const content = `"${msg.content.replace(/"/g, '""')}"`;
+      const rating = msg.feedback?.rating || '';
+      const comments = msg.feedback?.comments ? `"${msg.feedback.comments.replace(/"/g, '""')}"` : '';
+      const timestamp = msg.feedback?.timestamp ? new Date(msg.feedback.timestamp).toISOString() : '';
+      
+      csvContent += `${role},${content},${rating},${comments},${timestamp}\n`;
+    });
+    
+    // Create and download CSV file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-feedback-${chat.id.slice(0, 8)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="App">
       <header>
@@ -497,16 +672,43 @@ function App() {
           {activeTab === 'chat' && (
             <div className="chat-container">
               <div className="chat-header">
-                <h2>{getActiveChat()?.title || 'New Chat'}</h2>
-                {getActiveChat() && getActiveChat()!.messages.length > 0 && (
-                  <button className="clear-button" onClick={() => {
-                    if (window.confirm('Clear this chat history?')) {
-                      updateActiveChatMessages([]);
-                    }
-                  }}>
-                    Clear Chat
-                  </button>
-                )}
+                <h2>
+                  {activeChatId 
+                    ? (chats.find(chat => chat.id === activeChatId)?.title || 'Untitled Chat') 
+                    : 'New Chat'}
+                </h2>
+                <div className="chat-actions">
+                  {getActiveChat() && getActiveChat()!.messages.length > 0 && (
+                    <>
+                      <button 
+                        className="export-button"
+                        onClick={() => {
+                          const chat = getActiveChat();
+                          if (!chat) return;
+                          exportChatWithFeedback();
+                        }}
+                        title="Export chat with feedback"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                      <button 
+                        className="clear-button" 
+                        onClick={() => {
+                          if (window.confirm('Clear this chat history?')) {
+                            updateActiveChatMessages([]);
+                          }
+                        }}
+                        title="Clear chat"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
               <div className="chat-history">
                 {!activeChatId ? (
@@ -522,32 +724,66 @@ function App() {
                     <div key={index} className={`message ${msg.role}`}>
                       <div className="message-content">
                         {msg.role === 'assistant' ? (
-                          <div className="markdown-content">
-                            <ReactMarkdown 
-                              remarkPlugins={[remarkGfm]}
-                              components={{
-                                code({ node, className, children, ...props }) {
-                                  const match = /language-(\w+)/.exec(className || '');
-                                  return match ? (
-                                    <SyntaxHighlighter
-                                      style={tomorrow as any}
-                                      language={match[1]}
-                                      PreTag="div"
-                                      {...(props as SyntaxHighlighterProps)}
-                                    >
-                                      {String(children).replace(/\n$/, '')}
-                                    </SyntaxHighlighter>
-                                  ) : (
-                                    <code className={className} {...props}>
-                                      {children}
-                                    </code>
-                                  );
-                                }
-                              }}
-                            >
-                              {msg.content}
-                            </ReactMarkdown>
-                          </div>
+                          <>
+                            <div className="markdown-content">
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {msg.content}
+                              </ReactMarkdown>
+                            </div>
+                            
+                            {/* Display thinking if available */}
+                            {showThinking && msg.thinking && (
+                              <div className="thinking-section">
+                                {/* ...existing thinking section code... */}
+                              </div>
+                            )}
+                            
+                            {/* Add feedback buttons */}
+                            <div className="message-feedback">
+                              <button 
+                                className={`feedback-btn ${msg.feedback?.rating === 'positive' ? 'active' : ''}`}
+                                onClick={() => handleFeedback(index, 'positive')}
+                                title="This response was helpful"
+                              >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M7 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 20.5304 2 20V13C2 12.4696 2.21071 11.9609 2.58579 11.5858C2.96086 11.2107 3.46957 11 4 11H7M14 9V5C14 4.20435 13.6839 3.44129 13.1213 2.87868C12.5587 2.31607 11.7956 2 11 2L7 11V22H18.28C18.7623 22.0055 19.2304 21.8364 19.5979 21.524C19.9654 21.2116 20.2077 20.7769 20.28 20.3L21.66 11.3C21.7035 11.0134 21.6842 10.7207 21.6033 10.4423C21.5225 10.1638 21.3821 9.90629 21.1919 9.68751C21.0016 9.46873 20.7661 9.29393 20.5016 9.17522C20.2371 9.0565 19.9499 8.99672 19.66 9H14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </button>
+                              
+                              <button 
+                                className={`feedback-btn ${msg.feedback?.rating === 'negative' ? 'active' : ''}`}
+                                onClick={() => handleFeedback(index, 'negative')}
+                                title="This response could be improved"
+                              >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M17 2H20C20.5304 2 21.0391 2.21071 21.4142 2.58579C21.7893 2.96086 22 3.46957 22 4V11C22 11.5304 21.7893 12.0391 21.4142 12.4142C21.0391 12.7893 20.5304 13 20 13H17M10 15V19C10 19.7956 10.3161 20.5587 10.8787 21.1213C11.4413 21.6839 12.2044 22 13 22L17 13V2H5.72C5.23768 1.99448 4.76965 2.16359 4.40209 2.47599C4.03452 2.78839 3.79221 3.22309 3.72 3.7L2.34 12.7C2.29647 12.9866 2.31583 13.2793 2.39666 13.5577C2.47749 13.8362 2.6179 14.0937 2.80814 14.3125C2.99839 14.5313 3.23393 14.7061 3.49843 14.8248C3.76294 14.9435 4.05014 15.0033 4.34 15H10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </button>
+                              
+                              {/* Rest of the feedback UI remains the same */}
+                              {msg.feedback?.rating && !msg.feedback?.comments && (
+                                <button 
+                                  className="feedback-comment-btn"
+                                  onClick={() => openFeedbackModal(index)}
+                                  title="Add comment"
+                                >
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 8H17M7 12H11M3 20.2895V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7.96125C7.66178 17 7.3706 17.0949 7.13093 17.2713L4.26258 19.5634C3.90408 19.8534 3.89641 20.4016 3.94761 20.6905C3.96308 20.7619 4.02754 20.2498 3 20.2895Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                </button>
+                              )}
+                              
+                              {/* Show feedback comment if provided */}
+                              {msg.feedback?.comments && (
+                                <div className="feedback-comment" onClick={() => openFeedbackModal(index)}>
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 8H17M7 12H11M3 20.2895V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7.96125C7.66178 17 7.3706 17.0949 7.13093 17.2713L4.26258 19.5634C3.90408 19.8534 3.89641 20.4016 3.94761 20.6905C3.96308 20.7619 4.02754 20.2498 3 20.2895Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                  <span>{msg.feedback.comments.length > 20 ? msg.feedback.comments.substring(0, 20) + '...' : msg.feedback.comments}</span>
+                                </div>
+                              )}
+                            </div>
+                          </>
                         ) : (
                           msg.content
                         )}
@@ -575,7 +811,7 @@ function App() {
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Enter your text here..."
+                  placeholder={activeChatId ? "Enter your text here..." : "Create a chat to start"}
                   required
                   disabled={isLoading || !activeChatId}
                 />
@@ -699,6 +935,28 @@ function App() {
           )}
         </div>
       </div>
+
+      {/* Add this feedback modal to your JSX */}
+      {feedbackModal.isOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content feedback-modal">
+            <h3>Provide Detailed Feedback</h3>
+            <p>Your feedback helps improve the model responses.</p>
+            
+            <textarea
+              value={feedbackModal.comment}
+              onChange={(e) => setFeedbackModal({...feedbackModal, comment: e.target.value})}
+              placeholder="What was helpful or unhelpful about this response? How could it be improved?"
+              rows={5}
+            ></textarea>
+            
+            <div className="modal-buttons">
+              <button onClick={() => setFeedbackModal({...feedbackModal, isOpen: false})}>Cancel</button>
+              <button onClick={saveFeedbackComment} className="primary-button">Save Feedback</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
