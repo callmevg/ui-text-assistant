@@ -1011,3 +1011,14 @@ button[type="submit"]:disabled {
   background-color: #f3f4f6;
   color: #111827;
 }
+
+/* Update the chat-header h2 styling to match sidebar-header h2 */
+.chat-header h2 {
+  margin: 0;
+  font-size: 0.95rem;  /* Match sidebar font size */
+  font-weight: 600;
+  color: #4b5563;      /* Match sidebar text color */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
