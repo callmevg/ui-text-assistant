@@ -20,6 +20,9 @@ function App() {
   // Tab state
   const [activeTab, setActiveTab] = useState('chat');
 
+  // Debug state
+  const [showDebug, setShowDebug] = useState(false);
+
   // Load settings from local storage on component mount
   useEffect(() => {
     const savedApiKey = localStorage.getItem('apiKey');
@@ -299,6 +302,33 @@ function App() {
               )}
             </div>
           </div>
+
+          <div className="debug-section">
+            <div className="debug-header" onClick={() => setShowDebug(!showDebug)}>
+              <h3>Troubleshooting</h3>
+              <span>{showDebug ? '▲' : '▼'}</span>
+            </div>
+            
+            {showDebug && (
+              <div className="debug-content">
+                <p>If you're getting 405 errors, please verify:</p>
+                <ol>
+                  <li>Your <strong>Endpoint URL</strong> should be in this format:<br/>
+                  <code>https://your-resource-name.openai.azure.com</code><br/>
+                  (without any trailing slashes)
+                  </li>
+                  <li>Your <strong>Deployment Name</strong> should match exactly what you created in Azure OpenAI Studio</li>
+                  <li>Your <strong>API Key</strong> should be one of the keys shown in the Azure Portal for this resource</li>
+                </ol>
+                
+                <div className="test-connection">
+                  <h4>Test Connection</h4>
+                  <p>Current API URL that will be called:</p>
+                  <code>{`${endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint}/openai/deployments/${endpointName}/chat/completions?api-version=2023-05-15`}</code>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
       
@@ -327,34 +357,33 @@ function App() {
             {isLoading && (
               <div className="message assistant loading">
                 <div className="message-content">
-                  <div className="loading-indicator">
+                  <div className="loading-indicator"></div>
                     <div></div><div></div><div></div>
                   </div>
                 </div>
-              </div>
-            )}
-            {error && (
-              <div className="error-message">
-                <p>{error}</p>
-              </div>
-            )}
+              )}
+              {error && (
+                <div className="error-message">
+                  <p>{error}</p>
+                </div>
+              )}
+            </div>
+            
+            <form onSubmit={handleSubmit} className="message-form">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter your text here..."
+                required
+                disabled={isLoading}
+              />
+              <button type="submit" disabled={isLoading}>
+                {isLoading ? 'Sending...' : 'Send'}
+              </button>
+            </form>
           </div>
-          
-          <form onSubmit={handleSubmit} className="message-form">
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter your text here..."
-              required
-              disabled={isLoading}
-            />
-            <button type="submit" disabled={isLoading}>
-              {isLoading ? 'Sending...' : 'Send'}
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
   );
 }
 
