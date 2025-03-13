@@ -25,6 +25,7 @@
   --active-chat-color: #1e40af;
   --hover-button-bg: #f3f4f6;
   --hover-button-color: #374151;
+  --transition-speed: 0.5s;
 }
 
 .dark-mode {
@@ -2138,4 +2139,11 @@ input:checked + .toggle-label:before {
 
 .dark-mode .modal-content p {
   color: var(--chat-item-color);
+}
+
+body, .App, .chat-sidebar, .main-content, .chat-header, .message-content,
+input, textarea, select, button, .settings-panel, .modal-content {
+  transition: background-color var(--transition-speed) ease-in, 
+              color var(--transition-speed) ease-in,
+              border-color var(--transition-speed) ease-in;
 }
