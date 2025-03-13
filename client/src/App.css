@@ -262,8 +262,8 @@ input:focus {
   display: flex;
   padding: 16px;
   gap: 12px;
-  border-top: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  /* border-top: 1px solid #e5e7eb; */
+  background-color: #f9fafb;
 }
 
 textarea {
@@ -835,7 +835,7 @@ button[type="submit"]:disabled {
   textarea {
     margin-bottom: 0;
     height: 50px; /* Smaller textarea on mobile */
-    padding: 10px;
+    padding: 11px 10px;
   }
   
   button[type="submit"] {
