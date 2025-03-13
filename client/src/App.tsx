@@ -626,6 +626,7 @@ function App() {
                           renameChat(chat.id, newTitle.trim());
                         }
                       }}
+                      title="Rename chat"
                     >
                       ✏️
                     </button>
@@ -637,6 +638,7 @@ function App() {
                           deleteChat(chat.id);
                         }
                       }}
+                      title="Delete chat"
                     >
                       🗑️
                     </button>
@@ -662,58 +664,65 @@ function App() {
           {activeTab === 'chat' && (
             <div className="chat-container">
               <div className="chat-header">
-                {/* Hamburger menu for mobile */}
-                <button className="mobile-menu-toggle" onClick={() => setShowSidebar(!showSidebar)} title="Toggle Sidebar">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-                
-                {/* Chat title */}
-                <h2>{activeChatId ? (chats.find(chat => chat.id === activeChatId)?.title || 'Untitled Chat') : 'New Chat'}</h2>
-                
-                <div className="chat-actions">
-  {/* New chat button */}
-  <button className="new-chat-btn" onClick={createNewChat}>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-    <span>New</span>
-  </button>
-  
-  {/* Clear chat button - now on the surface */}
-  {getActiveChat() && getActiveChat()!.messages.length > 0 && (
-    <button 
-      className="clear-button" 
-      onClick={() => {
-        if (window.confirm('Clear this chat history?')) {
-          updateActiveChatMessages([]);
-        }
-      }}
-      title="Clear chat"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </button>
-  )}
-  
-  {/* Replace the dropdown with a simple export button */}
-{getActiveChat() && getActiveChat()!.messages.length > 0 && (
+  {/* Hamburger menu for mobile - Add onClick handler */}
   <button 
-    className="export-button" 
-    onClick={exportChatWithFeedback} 
-    title="Export chat as JSON"
+    className="mobile-menu-toggle header-action-btn" 
+    onClick={() => setShowSidebar(!showSidebar)} 
+    title="Toggle sidebar"
   >
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   </button>
-)}
-
+  
+  {/* Chat title */}
+  <h2>{activeChatId ? (chats.find(chat => chat.id === activeChatId)?.title || 'Untitled Chat') : 'New Chat'}</h2>
+  
+  <div className="chat-actions">
+    {/* New chat button - Add onClick handler */}
+    <button 
+      className="new-chat-btn" 
+      onClick={createNewChat} 
+      title="Start a new chat"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <span>New</span>
+    </button>
+    
+    {/* Clear chat button */}
+    {getActiveChat() && getActiveChat()!.messages.length > 0 && (
+      <button 
+        className="clear-button header-action-btn" 
+        onClick={() => {
+          if (window.confirm('Clear this chat history?')) {
+            updateActiveChatMessages([]);
+          }
+        }}
+        title="Clear chat"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+    )}
+    
+    {/* Export button */}
+    {getActiveChat() && getActiveChat()!.messages.length > 0 && (
+      <button 
+        className="export-button header-action-btn" 
+        onClick={exportChatWithFeedback} 
+        title="Export chat as JSON"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+    )}
+  </div>
 </div>
 
-              </div>
               <div className="chat-history">
                 {!activeChatId ? (
                   <div className="empty-chat">
@@ -769,7 +778,7 @@ function App() {
                                 <button 
                                   className="feedback-comment-btn"
                                   onClick={() => openFeedbackModal(index)}
-                                  title="Add comment"
+                                  title="Add detailed feedback"
                                 >
                                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7 8H17M7 12H11M3 20.2895V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7.96125C7.66178 17 7.3706 17.0949 7.13093 17.2713L4.26258 19.5634C3.90408 19.8534 3.89641 20.4016 3.94761 20.6905C3.96308 20.7619 4.02754 20.2498 3 20.2895Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -819,7 +828,8 @@ function App() {
                   required
                   disabled={isLoading || !activeChatId}
                 />
-                <button type="submit" disabled={isLoading || !activeChatId}>
+                {/* Add tooltip to the form submit button */}
+                <button type="submit" disabled={isLoading || !activeChatId} title="Send message">
                   {isLoading ? 'Sending...' : 'Send'}
                 </button>
               </form>
