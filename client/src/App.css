@@ -17,7 +17,7 @@ body {
 /* App container */
 .App {
   max-width: 100%;
-  height: 100vh;
+  height: 100vh; /* Use full viewport height now */
   display: flex;
   flex-direction: column;
 }
@@ -57,8 +57,8 @@ body {
   }
 }
 
-/* Header */
-header {
+/* Remove header styles entirely or comment them out */
+/* header {
   background-color: #1a56db;
   background-image: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   color: white;
@@ -68,16 +68,7 @@ header {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   position: relative;
   z-index: 10;
-}
-
-header h1 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  text-align: center;
-  flex: 1;
-  margin: 0;
-  letter-spacing: -0.025em;
-}
+} */
 
 /* Add this new style to emphasize "WE" in the title */
 header h1 .emphasis {
@@ -218,9 +209,9 @@ input:focus {
 }
 
 .clear-button:hover {
-  background-color: #f9fafb;
-  color: #111827;
-  border-color: #d1d5db;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
 }
 
 .chat-history {
@@ -579,9 +570,9 @@ button[type="submit"]:disabled {
 }
 
 .main-container {
-  display: flex;
   flex: 1;
-  overflow: hidden;
+  display: flex;
+  height: 100vh; /* Use full height */
 }
 
 .chat-sidebar {
@@ -592,6 +583,7 @@ button[type="submit"]:disabled {
   display: flex;
   flex-direction: column;
   box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
+  height: 100%;
 }
 
 .chat-sidebar.closed {
@@ -601,11 +593,57 @@ button[type="submit"]:disabled {
 .sidebar-header {
   padding: 16px;
   border-bottom: 1px solid #e5e7eb;
+  height: 56px; /* Match chat-header height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e40af;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.sidebar-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f9fafb;
-  height: 56px; /* Match the height to chat-header */
+}
+
+.settings-button {
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.sidebar-subheader {
+  padding: 12px 16px;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-subheader h2 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
 }
 
 .sidebar-header h2 {
@@ -615,6 +653,23 @@ button[type="submit"]:disabled {
   color: #4b5563;
 }
 
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  margin-top: auto;
+  padding: 8px 0;
+}
+
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+/* Update new chat button styling to restore blue color */
 .new-chat-btn {
   background-color: #3b82f6;
   color: white;
@@ -635,9 +690,21 @@ button[type="submit"]:disabled {
   background-color: #2563eb;
 }
 
-.chat-list {
-  overflow-y: auto;
-  flex: 1;
+.new-chat-btn svg {
+  stroke: white;
+}
+
+/* Ensure it's properly styled even on mobile */
+@media (max-width: 768px) {
+  .new-chat-btn {
+    padding: 6px 8px;
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .new-chat-btn svg {
+    stroke: white;
+  }
 }
 
 .chat-item {
@@ -759,38 +826,185 @@ button[type="submit"]:disabled {
   }
   
   .message-form {
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px;
+    flex-direction: row; /* Keep in a row instead of column */
+    gap: 8px;
+    padding: 10px;
+    align-items: flex-end;
   }
   
   textarea {
-    margin-bottom: 8px;
+    margin-bottom: 0;
+    height: 50px; /* Smaller textarea on mobile */
+    padding: 10px;
   }
   
   button[type="submit"] {
-    width: 100%;
-    padding: 12px;
+    width: auto;
+    min-width: 80px;
+    padding: 10px;
+    height: 50px; /* Match textarea height */
+    flex-shrink: 0; /* Prevent button from shrinking */
   }
   
   .chat-sidebar {
-    position: absolute;
-    height: calc(100vh - 63px);
-    z-index: 100;
-    width: 85%;
-    max-width: 300px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: fixed;
+    top: 0; /* Start from the very top now */
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
   }
   
-  .chat-sidebar.closed {
-    transform: translateX(-100%);
+  .chat-sidebar.open {
+    transform: translateX(0);
+    top: 0; /* Start from top of screen */
+    height: 100%;
   }
   
   header h1 {
     font-size: 1.2rem;
   }
+
+  .sidebar-header {
+    padding: 10px;
+    height: auto;
+  }
+  
+  .sidebar-header h2 {
+    font-size: 0.85rem;
+    max-width: 40%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .new-chat-btn {
+    padding: 6px 8px;
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .new-chat-btn span {
+    display: none;
+  }
+  
+  .new-chat-btn svg {
+    stroke: white;
+  }
+  
+  /* Show just the plus icon on mobile */
+  .new-chat-btn svg {
+    margin-right: 0;
+  }
+  
+  /* Fix chat container height to prevent overflow */
+  .chat-container {
+    height: calc(100% - 56px);
+  }
+  
+  /* Fix chat history scrolling */
+  .chat-history {
+    padding: 12px;
+  }
+  
+  /* Make messages take up more width on small screens */
+  .message {
+    max-width: 90%;
+  }
+  
+  /* Make sure the dropdown menus don't get cut off */
+  .dropdown-content {
+    right: -20px;
+    min-width: 150px;
+  }
+  
+  /* Adjust chat actions for mobile */
+  .chat-actions {
+    gap: 4px;
+  }
+  
+  .export-button, .clear-button {
+    padding: 4px 8px;
+  }
+  
+  /* Fix message feedback UI */
+  .message-feedback {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .feedback-btn {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  /* Fix container layout */
+  .App {
+    height: 100vh;
+    padding: 0;
+  }
+  
+  .main-container {
+    height: calc(100vh - 56px); /* Subtract header height */
+  }
+  
+  /* Fix modal for mobile */
+  .modal-content {
+    width: 95%;
+    padding: 16px;
+  }
+  
+  /* Ensure the sidebar doesn't cause page overflow */
+  .chat-sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+  }
+  
+  .chat-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  /* Fix the main content area when sidebar is hidden */
+  .main-content {
+    width: 100%;
+  }
+  
+  /* Add a toggle button in the chat header for mobile */
+  .mobile-menu-toggle {
+    display: flex;
+    background-color: transparent;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+    border-radius: 6px;
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    fill: none;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* Hide on desktop */
+  @media (min-width: 769px) {
+    .mobile-menu-toggle {
+      display: none;
+    }
+  }
 }
 
+/* Extra small devices */
 @media (max-width: 480px) {
   .App {
     padding: 5px;
@@ -820,6 +1034,20 @@ button[type="submit"]:disabled {
   .sidebar-toggle {
     font-size: 16px;
     padding: 4px 6px;
+  }
+  
+  .message-form {
+    padding: 8px;
+  }
+  
+  textarea {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+  
+  button[type="submit"] {
+    min-width: 70px;
+    font-size: 0.9rem;
   }
 }
 
@@ -1187,22 +1415,80 @@ button[type="submit"]:disabled {
   background-color: #1d4ed8;
 }
 
-/* Dropdown menu for export */
+/* Dropdown menu for export - hover-based version */
+/* 
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+}
+
 .dropdown-content {
   display: none;
+  opacity: 0;
   position: absolute;
   right: 0;
+  top: 100%;
   background-color: white;
   min-width: 180px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  z-index: 1000;
   border-radius: 6px;
-  overflow: hidden;
+  margin-top: 4px;
+  border: 1px solid #e5e7eb;
+  transition: opacity 0.2s;
+}
+
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #374151;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-content button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-content button:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-content button.danger {
+  color: #ef4444;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dropdown-content button.danger:hover {
+  background-color: #fef2f2;
+}
+*/
+
+/* Mobile-specific dropdown fixes */
+@media (max-width: 768px) {
+  .dropdown-content {
+    position: fixed;
+    top: auto;
+    bottom: 60px;
+    right: 16px;
+    left: 16px;
+    width: calc(100% - 32px);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .dropdown:hover .dropdown-content,
@@ -1255,6 +1541,7 @@ button[type="submit"]:disabled {
 .chat-actions {
   display: flex;
   gap: 8px;
+  align-items: center;
 }
 
 .export-button {
@@ -1262,8 +1549,7 @@ button[type="submit"]:disabled {
   color: #6b7280;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1272,10 +1558,110 @@ button[type="submit"]:disabled {
 
 .export-button:hover {
   background-color: #f3f4f6;
-  color: #111827;
+  color: #374151;
 }
 
 /* Add this to App.css to hide any debug elements */
 .debug-code {
   display: none !important;
+}
+
+/* Update the mobile-menu-toggle to match export-button */
+.mobile-menu-toggle {
+  background-color: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  fill: none;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Make sure all header buttons have consistent styling */
+.chat-header button,
+.export-button,
+.clear-button,
+.mobile-menu-toggle {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style the settings as a list item */
+.settings-list-item {
+  padding: 12px 16px;
+  margin: 0 0 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  margin-top: auto; /* Push it to the bottom */
+  /* border-top: 1px solid #e5e7eb; */
+  padding-top: 16px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.settings-list-item:hover {
+  background-color: #f3f4f6;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4b5563;
+}
+
+.settings-item svg {
+  color: #6b7280;
+}
+
+/* Make the new-chat-btn styles more specific to override other header button styles */
+.chat-header .new-chat-btn {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  width: auto !important; /* Override fixed width */
+  height: auto !important; /* Override fixed height */
+}
+
+.chat-header .new-chat-btn:hover {
+  background-color: #2563eb !important;
+}
+
+.chat-header .new-chat-btn svg {
+  stroke: white !important;
+}
+
+/* For mobile */
+@media (max-width: 768px) {
+  .chat-header .new-chat-btn {
+    padding: 6px 8px !important;
+  }
 }
