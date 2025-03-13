@@ -60,6 +60,12 @@ function App() {
     comment: ''
   });
 
+  // Add to your existing state variables
+  const [darkMode, setDarkMode] = useState<boolean>(
+    localStorage.getItem('darkMode') === 'true' || 
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+
   // Add this function and call it once
   const cleanLocalStorage = () => {
     const chatsString = localStorage.getItem('chats');
@@ -105,6 +111,16 @@ function App() {
   useEffect(() => {
     localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
   }, [chatHistory]);
+
+  // Add effect to apply dark mode
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+    localStorage.setItem('darkMode', darkMode.toString());
+  }, [darkMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,7 +171,15 @@ function App() {
         const messages = [
           {
             role: "system",
-            content: `You are an AI assistant that helps generate and improve UI text. 
+            content: `You are an AI assistant that helps generate and improve UI text.
+
+            THINKING PROCESS:
+            1. First, carefully analyze the user's request or text
+            2. Consider the context, purpose, and audience for the UI text
+            3. Think step-by-step about the most effective approach
+            4. Consider multiple alternatives before selecting the best option
+            5. Ensure your response follows all writing guidelines provided
+
             Consider these writing style guidelines when creating your responses:
             
             ${guidelinesText}`
@@ -256,10 +280,16 @@ function App() {
       const messages = [
         {
           role: "system",
-          content: `You are an AI assistant that helps generate and improve UI text. 
-          Consider these writing style guidelines when creating your responses:
-          
-          ${guidelinesText}`
+          content: `You are an AI assistant that helps generate and improve UI text.
+
+          THINKING PROCESS:
+          1. First, carefully analyze the user's request or text
+          2. Consider the context, purpose, and audience for the UI text
+          3. Ensure your response follows all writing guidelines provided. Strictly adhere to these writing style guidelines when creating your responses:
+          ${guidelinesText}
+          4. Think step-by-step about the most accurate response
+          5. Consider multiple alternatives before selecting the best option
+          6. Ensure your response follows all writing guidelines provided`
         },
         ...newMessages.map(msg => ({
           role: msg.role === 'user' ? 'user' : 'assistant',
@@ -593,6 +623,10 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
     <div className="App">
       <div className="main-container">
@@ -720,6 +754,23 @@ function App() {
         </svg>
       </button>
     )}
+    {/* Add this to your chat actions div in the chat header */}
+    <button 
+      className="theme-toggle-btn header-action-btn"
+      onClick={toggleDarkMode}
+      title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      {darkMode ? (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 2V4M12 20V22M4.93 4.93L6.34 6.34M17.66 17.66L19.07 19.07M2 12H4M20 12H22M4.93 19.07L6.34 17.66M17.66 6.34L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      ) : (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+    </button>
   </div>
 </div>
 
@@ -944,6 +995,29 @@ function App() {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Add this inside your settings panel */}
+              <div className="theme-section">
+                <h2>Appearance</h2>
+                <div className="form-group">
+                  <label htmlFor="theme-toggle">Theme</label>
+                  <div className="theme-toggle-wrapper">
+                    <div className="toggle-switch">
+                      <input
+                        type="checkbox"
+                        id="theme-toggle"
+                        checked={darkMode}
+                        onChange={toggleDarkMode}
+                      />
+                      <label htmlFor="theme-toggle" className="toggle-label">
+                        <span className="toggle-inner"></span>
+                        <span className="toggle-switch"></span>
+                      </label>
+                    </div>
+                    <span className="toggle-text">{darkMode ? 'Dark' : 'Light'}</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

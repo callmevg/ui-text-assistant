@@ -1,3 +1,66 @@
+/* Add at the top of your CSS file */
+:root {
+  /* Light mode colors */
+  --bg-color: #ffffff;
+  --text-color: #111827;
+  --sidebar-bg: #f9fafb;
+  --sidebar-hover: #f3f4f6;
+  --border-color: #e5e7eb;
+  --button-bg: #f3f4f6;
+  --button-text: #374151;
+  --input-bg: #ffffff;
+  --input-border: #e5e7eb;
+  --message-user-bg: #f3f4f6;
+  --message-assistant-bg: #ffffff;
+  --primary-button-bg: #2563eb;
+  --primary-button-hover: #1d4ed8;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+  --modal-bg: #ffffff;
+  --error-color: #ef4444;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: #f1f5f9;
+  --chat-item-color: #4b5563;
+  --active-chat-bg: #eff6ff;
+  --active-chat-border: #3b82f6;
+  --active-chat-color: #1e40af;
+  --hover-button-bg: #f3f4f6;
+  --hover-button-color: #374151;
+}
+
+.dark-mode {
+  /* Dark mode colors - enhanced version */
+  --bg-color: #121212;
+  --text-color: #e5e7eb;
+  --sidebar-bg: #1e1e1e;
+  --sidebar-hover: #333333;
+  --border-color: #4b5563;
+  --button-bg: #374151;
+  --button-text: #e5e7eb;
+  --input-bg: #2a2a2a;
+  --input-border: #4b5563;
+  --message-user-bg: #2563eb;
+  --message-assistant-bg: #2a2a2a;
+  --primary-button-bg: #3b82f6;
+  --primary-button-hover: #2563eb;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+  --modal-bg: #1e1e1e;
+  --error-color: #f87171;
+  --scrollbar-thumb: #4b5563;
+  --scrollbar-track: #333333;
+  --code-bg: #2d2d2d;
+  --code-text: #e5e7eb;
+  --dropdown-bg: #252525;
+  --dropdown-hover: #333333;
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --chat-item-color: #a3a3a3;
+  --active-chat-bg: #1e3a8a;
+  --active-chat-border: #3b82f6;
+  --active-chat-color: #ffffff;
+  --hover-button-bg: #4b5563;
+  --hover-button-color: #e5e7eb;
+}
+
 /* Base styles and reset */
 * {
   box-sizing: border-box;
@@ -9,9 +72,10 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   line-height: 1.5;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* App container */
@@ -20,6 +84,9 @@ body {
   height: 100vh; /* Use full viewport height now */
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .App-logo {
@@ -263,7 +330,13 @@ input:focus {
   padding: 16px;
   gap: 12px;
   /* border-top: 1px solid #e5e7eb; */
+  /* background-color: #f9fafb; */
+  /* background-color: var(--bg-color); */
   background-color: #f9fafb;
+}
+
+.dark-mode .message-form {
+  background-color: var(--bg-color);
 }
 
 textarea {
@@ -577,8 +650,8 @@ button[type="submit"]:disabled {
 
 .chat-sidebar {
   width: 280px;
-  background-color: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -592,7 +665,8 @@ button[type="submit"]:disabled {
 
 .sidebar-header {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  /* border-bottom: 1px solid #e5e7eb; */
+  border-bottom: 1px solid var(--border-color);
   height: 56px; /* Match chat-header height */
   display: flex;
   align-items: center;
@@ -606,6 +680,9 @@ button[type="submit"]:disabled {
   color: #1e40af;
   margin: 0;
   letter-spacing: -0.025em;
+}
+.dark-mode .app-title {
+  color: #3b82f6;
 }
 
 .sidebar-actions {
@@ -709,7 +786,7 @@ button[type="submit"]:disabled {
 
 .chat-item {
   padding: 12px 16px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -718,12 +795,12 @@ button[type="submit"]:disabled {
 }
 
 .chat-item:hover {
-  background-color: #f9fafb;
+  background-color: var(--sidebar-hover);
 }
 
 .chat-item.active {
-  background-color: #eff6ff;
-  border-left: 3px solid #3b82f6;
+  background-color: var(--active-chat-bg);
+  border-left: 3px solid var(--active-chat-border);
 }
 
 .chat-item-title {
@@ -732,11 +809,11 @@ button[type="submit"]:disabled {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.9rem;
-  color: #4b5563;
+  color: var(--chat-item-color);
 }
 
 .chat-item.active .chat-item-title {
-  color: #1e40af;
+  color: var(--active-chat-color);
   font-weight: 500;
 }
 
@@ -1621,15 +1698,20 @@ button[type="submit"]:disabled {
   background-color: #f3f4f6;
 }
 
+.dark-mode .settings-list-item:hover {
+  background-color: #333333;
+}
+
+/* Replace hardcoded colors */
 .settings-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #4b5563;
+  color: var(--chat-item-color);
 }
 
 .settings-item svg {
-  color: #6b7280;
+  color: var(--chat-item-color);
 }
 
 /* Make the new-chat-btn styles more specific to override other header button styles */
@@ -1664,4 +1746,396 @@ button[type="submit"]:disabled {
   .chat-header .new-chat-btn {
     padding: 6px 8px !important;
   }
+}
+
+/* Add theme toggle styles */
+.theme-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--button-bg);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.toggle-label:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-label {
+  background-color: var(--primary-button-bg);
+}
+
+input:checked + .toggle-label:before {
+  transform: translateX(26px);
+}
+
+.toggle-text {
+  font-size: 0.9rem;
+}
+
+/* Add visual cue when switching themes */
+.App {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Chat toggle in header for dark/light mode */
+.theme-toggle-btn {
+  cursor: pointer;
+}
+
+/* Dark mode active element states */
+.dark-mode button:focus,
+.dark-mode input:focus,
+.dark-mode textarea:focus,
+.dark-mode select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Add placeholder styling */
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Make sure new chat button is visible in dark mode */
+.dark-mode .new-chat-btn {
+  background-color: #3b82f6 !important;
+}
+
+/* Improve visibility of active elements */
+.dark-mode .chat-item:hover {
+  background-color: #333333;
+}
+
+/* Update these additional elements for dark mode */
+
+/* Chat messages */
+.dark-mode .message.user .message-content {
+  background-color: var(--message-user-bg);
+  color: white;
+}
+
+.dark-mode .message.assistant .message-content {
+  background-color: var(--message-assistant-bg);
+  color: var(--text-color);
+}
+
+/* Settings panel */
+.dark-mode .settings-panel {
+  background-color: var(--bg-color);
+}
+
+.dark-mode .settings-panel h2 {
+  color: var(--text-color);
+}
+
+/* Form elements */
+.dark-mode input, 
+.dark-mode textarea, 
+.dark-mode select {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-color: var(--input-border);
+}
+
+.dark-mode input:focus, 
+.dark-mode textarea:focus, 
+.dark-mode select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Buttons */
+.dark-mode .file-upload-label {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--border-color);
+}
+
+.dark-mode .file-upload-label:hover {
+  background-color: #4b5563;
+}
+
+/* Chat header */
+.dark-mode .chat-header {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode .chat-header h2 {
+  color: var(--text-color);
+}
+
+/* Action buttons */
+.dark-mode .mobile-menu-toggle,
+.dark-mode .export-button,
+.dark-mode .clear-button,
+.dark-mode .chat-header button {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode .mobile-menu-toggle:hover,
+.dark-mode .export-button:hover,
+.dark-mode .clear-button:hover,
+.dark-mode .chat-header button:hover {
+  background-color: #4b5563;
+}
+
+/* Modals */
+.dark-mode .modal-content {
+  background-color: var(--modal-bg);
+  color: var(--text-color);
+}
+
+.dark-mode .modal-buttons button:not(.primary-button) {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* Chat history */
+.dark-mode .chat-history {
+  background-color: var(--bg-color);
+}
+
+/* Guidelines section */
+.dark-mode .guidelines-list {
+  background-color: var(--message-assistant-bg);
+  border-color: var(--border-color);
+}
+
+.dark-mode .guideline-item {
+  border-color: var(--border-color);
+}
+
+.dark-mode .guideline-item button {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+}
+
+/* Selected files */
+.dark-mode .selected-files {
+  background-color: var(--message-assistant-bg);
+  border-color: var(--border-color);
+}
+
+.dark-mode .selected-files p,
+.dark-mode .selected-files li {
+  color: var(--text-color);
+}
+
+/* Debug section */
+.dark-mode .debug-section {
+  border-color: var(--border-color);
+}
+
+.dark-mode .debug-header {
+  background-color: var(--message-assistant-bg);
+}
+
+.dark-mode .debug-header h3 {
+  color: var(--text-color);
+}
+
+.dark-mode .debug-content {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.dark-mode .debug-content code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+
+.dark-mode .debug-content p,
+.dark-mode .debug-content li {
+  color: var(--text-color);
+}
+
+/* Markdown content */
+.dark-mode .markdown-content h1,
+.dark-mode .markdown-content h2,
+.dark-mode .markdown-content h3,
+.dark-mode .markdown-content h4,
+.dark-mode .markdown-content h5,
+.dark-mode .markdown-content h6 {
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode .markdown-content pre {
+  background-color: var(--code-bg);
+}
+
+.dark-mode .markdown-content pre code {
+  color: var(--code-text);
+}
+
+.dark-mode .markdown-content code {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--code-text);
+}
+
+.dark-mode .markdown-content blockquote {
+  border-color: var(--border-color);
+  color: #9ca3af;
+}
+
+.dark-mode .markdown-content a {
+  color: #60a5fa;
+}
+
+.dark-mode .markdown-content table th,
+.dark-mode .markdown-content table td {
+  border-color: var(--border-color);
+}
+
+.dark-mode .markdown-content table th {
+  background-color: var(--message-assistant-bg);
+}
+
+/* Chat items */
+.dark-mode .chat-item.active {
+  background-color: var(--active-chat-bg);
+  border-left: 3px solid var(--active-chat-border);
+}
+
+.dark-mode .chat-item.active .chat-item-title {
+  color: var(--active-chat-color);
+}
+
+/* Feedback UI */
+.dark-mode .message-feedback {
+  border-top-color: var(--border-color);
+}
+
+.dark-mode .feedback-btn {
+  background-color: var(--button-bg);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.dark-mode .feedback-btn:hover {
+  background-color: #4b5563;
+}
+
+.dark-mode .feedback-btn.active[title="This response was helpful"] {
+  background-color: rgba(52, 211, 153, 0.2); /* Based on --success-color */
+  border-color: var(--success-color);
+  color: var(--success-color);
+}
+
+.dark-mode .feedback-btn.active[title="This response could be improved"] {
+  background-color: rgba(248, 113, 113, 0.2); /* Based on --error-color */
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+/* Scrollbars - Webkit browsers */
+.dark-mode ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Make hover states consistent using variables */
+.dark-mode .mobile-menu-toggle:hover,
+.dark-mode .export-button:hover,
+.dark-mode .clear-button:hover,
+.dark-mode .chat-header button:hover,
+.dark-mode .file-upload-label:hover,
+.dark-mode .feedback-btn:hover,
+.dark-mode .guideline-item button:hover {
+  background-color: var(--hover-button-bg);
+  color: var(--hover-button-color);
+}
+
+/* Make code syntax highlighting more consistent in dark mode */
+.dark-mode .markdown-content code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+
+.dark-mode .markdown-content a {
+  color: var(--primary-button-bg);
+}
+
+.dark-mode .markdown-content blockquote {
+  border-color: var(--border-color);
+  color: var(--chat-item-color);
+}
+
+/* Consistent form styling */
+.dark-mode .form-group label {
+  color: var(--text-color);
+}
+
+.dark-mode .field-help {
+  color: var(--chat-item-color);
+}
+
+.dark-mode .label-hint {
+  color: var(--chat-item-color);
+}
+
+/* Make modal content consistent */
+.dark-mode .modal-content h3 {
+  color: var(--text-color);
+}
+
+.dark-mode .modal-content p {
+  color: var(--chat-item-color);
 }
