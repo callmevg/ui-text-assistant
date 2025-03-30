@@ -1,3 +1,67 @@
+/* Add at the top of your CSS file */
+:root {
+  /* Light mode colors */
+  --bg-color: #ffffff;
+  --text-color: #111827;
+  --sidebar-bg: #f9fafb;
+  --sidebar-hover: #f3f4f6;
+  --border-color: #e5e7eb;
+  --button-bg: #f3f4f6;
+  --button-text: #374151;
+  --input-bg: #ffffff;
+  --input-border: #e5e7eb;
+  --message-user-bg: #f3f4f6;
+  --message-assistant-bg: #ffffff;
+  --primary-button-bg: #2563eb;
+  --primary-button-hover: #1d4ed8;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+  --modal-bg: #ffffff;
+  --error-color: #ef4444;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: #f1f5f9;
+  --chat-item-color: #4b5563;
+  --active-chat-bg: #eff6ff;
+  --active-chat-border: #3b82f6;
+  --active-chat-color: #1e40af;
+  --hover-button-bg: #f3f4f6;
+  --hover-button-color: #374151;
+  --transition-speed: 0.5s;
+}
+
+.dark-mode {
+  /* Dark mode colors - enhanced version */
+  --bg-color: #121212;
+  --text-color: #e5e7eb;
+  --sidebar-bg: #1e1e1e;
+  --sidebar-hover: #333333;
+  --border-color: #4b5563;
+  --button-bg: #374151;
+  --button-text: #e5e7eb;
+  --input-bg: #2a2a2a;
+  --input-border: #4b5563;
+  --message-user-bg: #2563eb;
+  --message-assistant-bg: #2a2a2a;
+  --primary-button-bg: #3b82f6;
+  --primary-button-hover: #2563eb;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+  --modal-bg: #1e1e1e;
+  --error-color: #f87171;
+  --scrollbar-thumb: #4b5563;
+  --scrollbar-track: #333333;
+  --code-bg: #2d2d2d;
+  --code-text: #e5e7eb;
+  --dropdown-bg: #252525;
+  --dropdown-hover: #333333;
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --chat-item-color: #a3a3a3;
+  --active-chat-bg: #1e3a8a;
+  --active-chat-border: #3b82f6;
+  --active-chat-color: #ffffff;
+  --hover-button-bg: #4b5563;
+  --hover-button-color: #e5e7eb;
+}
+
 /* Base styles and reset */
 * {
   box-sizing: border-box;
@@ -9,17 +73,21 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   line-height: 1.5;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* App container */
 .App {
   max-width: 100%;
-  height: 100vh;
+  height: 100vh; /* Use full viewport height now */
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .App-logo {
@@ -57,8 +125,8 @@ body {
   }
 }
 
-/* Header */
-header {
+/* Remove header styles entirely or comment them out */
+/* header {
   background-color: #1a56db;
   background-image: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   color: white;
@@ -68,15 +136,11 @@ header {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   position: relative;
   z-index: 10;
-}
+} */
 
-header h1 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  text-align: center;
-  flex: 1;
-  margin: 0;
-  letter-spacing: -0.025em;
+/* Add this new style to emphasize "WE" in the title */
+header h1 .emphasis {
+  font-weight: 700;
 }
 
 .tab-navigation {
@@ -196,7 +260,6 @@ input:focus {
   padding: 16px;
   border-bottom: 1px solid #e5e7eb;
   background-color: #ffffff;
-  height: 56px; /* Fixed height to match sidebar header */
 }
 
 .chat-header h2 {
@@ -214,16 +277,18 @@ input:focus {
   color: #6b7280;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 6px 10px;
   font-size: 0.85rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
 }
 
 .clear-button:hover {
-  background-color: #f9fafb;
-  color: #111827;
-  border-color: #d1d5db;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
 }
 
 .chat-history {
@@ -274,8 +339,14 @@ input:focus {
   display: flex;
   padding: 16px;
   gap: 12px;
-  border-top: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  /* border-top: 1px solid #e5e7eb; */
+  /* background-color: #f9fafb; */
+  /* background-color: var(--bg-color); */
+  background-color: #f9fafb;
+}
+
+.dark-mode .message-form {
+  background-color: var(--bg-color);
 }
 
 textarea {
@@ -582,19 +653,20 @@ button[type="submit"]:disabled {
 }
 
 .main-container {
-  display: flex;
   flex: 1;
-  overflow: hidden;
+  display: flex;
+  height: 100vh; /* Use full height */
 }
 
 .chat-sidebar {
   width: 280px;
-  background-color: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
+  height: 100%;
 }
 
 .chat-sidebar.closed {
@@ -603,12 +675,31 @@ button[type="submit"]:disabled {
 
 .sidebar-header {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  /* border-bottom: 1px solid #e5e7eb; */
+  border-bottom: 1px solid var(--border-color);
+  height: 56px; /* Match chat-header height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e40af;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+.dark-mode .app-title {
+  color: #3b82f6;
+}
+
+.sidebar-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #f9fafb;
-  height: 56px; /* Match the height to chat-header */
 }
 
 .sidebar-header h2 {
@@ -618,6 +709,23 @@ button[type="submit"]:disabled {
   color: #4b5563;
 }
 
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  margin-top: auto;
+  padding: 8px 0;
+}
+
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+/* Update new chat button styling to restore blue color */
 .new-chat-btn {
   background-color: #3b82f6;
   color: white;
@@ -638,14 +746,26 @@ button[type="submit"]:disabled {
   background-color: #2563eb;
 }
 
-.chat-list {
-  overflow-y: auto;
-  flex: 1;
+.new-chat-btn svg {
+  stroke: white;
+}
+
+/* Ensure it's properly styled even on mobile */
+@media (max-width: 768px) {
+  .new-chat-btn {
+    padding: 6px 8px;
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .new-chat-btn svg {
+    stroke: white;
+  }
 }
 
 .chat-item {
   padding: 12px 16px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -654,12 +774,12 @@ button[type="submit"]:disabled {
 }
 
 .chat-item:hover {
-  background-color: #f9fafb;
+  background-color: var(--sidebar-hover);
 }
 
 .chat-item.active {
-  background-color: #eff6ff;
-  border-left: 3px solid #3b82f6;
+  background-color: var(--active-chat-bg);
+  border-left: 3px solid var(--active-chat-border);
 }
 
 .chat-item-title {
@@ -668,11 +788,11 @@ button[type="submit"]:disabled {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.9rem;
-  color: #4b5563;
+  color: var(--chat-item-color);
 }
 
 .chat-item.active .chat-item-title {
-  color: #1e40af;
+  color: var(--active-chat-color);
   font-weight: 500;
 }
 
@@ -762,38 +882,185 @@ button[type="submit"]:disabled {
   }
   
   .message-form {
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px;
+    flex-direction: row; /* Keep in a row instead of column */
+    gap: 8px;
+    padding: 10px;
+    align-items: flex-end;
   }
   
   textarea {
-    margin-bottom: 8px;
+    margin-bottom: 0;
+    height: 50px; /* Smaller textarea on mobile */
+    padding: 11px 10px;
   }
   
   button[type="submit"] {
-    width: 100%;
-    padding: 12px;
+    width: auto;
+    min-width: 80px;
+    padding: 10px;
+    height: 50px; /* Match textarea height */
+    flex-shrink: 0; /* Prevent button from shrinking */
   }
   
   .chat-sidebar {
-    position: absolute;
-    height: calc(100vh - 63px);
-    z-index: 100;
-    width: 85%;
-    max-width: 300px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: fixed;
+    top: 0; /* Start from the very top now */
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
   }
   
-  .chat-sidebar.closed {
-    transform: translateX(-100%);
+  .chat-sidebar.open {
+    transform: translateX(0);
+    top: 0; /* Start from top of screen */
+    height: 100%;
   }
   
   header h1 {
     font-size: 1.2rem;
   }
+
+  .sidebar-header {
+    padding: 10px;
+    height: auto;
+  }
+  
+  .sidebar-header h2 {
+    font-size: 0.85rem;
+    max-width: 40%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .new-chat-btn {
+    padding: 6px 8px;
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .new-chat-btn span {
+    display: none;
+  }
+  
+  .new-chat-btn svg {
+    stroke: white;
+  }
+  
+  /* Show just the plus icon on mobile */
+  .new-chat-btn svg {
+    margin-right: 0;
+  }
+  
+  /* Fix chat container height to prevent overflow */
+  .chat-container {
+    height: calc(100% - 56px);
+  }
+  
+  /* Fix chat history scrolling */
+  .chat-history {
+    padding: 12px;
+  }
+  
+  /* Make messages take up more width on small screens */
+  .message {
+    max-width: 90%;
+  }
+  
+  /* Make sure the dropdown menus don't get cut off */
+  .dropdown-content {
+    right: -20px;
+    min-width: 150px;
+  }
+  
+  /* Adjust chat actions for mobile */
+  .chat-actions {
+    gap: 4px;
+  }
+  
+  .export-button, .clear-button {
+    padding: 4px 8px;
+  }
+  
+  /* Fix message feedback UI */
+  .message-feedback {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .feedback-btn {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  /* Fix container layout */
+  .App {
+    height: 100vh;
+    padding: 0;
+  }
+  
+  .main-container {
+    height: calc(100vh - 56px); /* Subtract header height */
+  }
+  
+  /* Fix modal for mobile */
+  .modal-content {
+    width: 95%;
+    padding: 16px;
+  }
+  
+  /* Ensure the sidebar doesn't cause page overflow */
+  .chat-sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+  }
+  
+  .chat-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  /* Fix the main content area when sidebar is hidden */
+  .main-content {
+    width: 100%;
+  }
+  
+  /* Add a toggle button in the chat header for mobile */
+  .mobile-menu-toggle {
+    display: flex;
+    background-color: transparent;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+    border-radius: 6px;
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    fill: none;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* Hide on desktop */
+  @media (min-width: 769px) {
+    .mobile-menu-toggle {
+      display: none;
+    }
+  }
 }
 
+/* Extra small devices */
 @media (max-width: 480px) {
   .App {
     padding: 5px;
@@ -823,6 +1090,20 @@ button[type="submit"]:disabled {
   .sidebar-toggle {
     font-size: 16px;
     padding: 4px 6px;
+  }
+  
+  .message-form {
+    padding: 8px;
+  }
+  
+  textarea {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+  
+  button[type="submit"] {
+    min-width: 70px;
+    font-size: 0.9rem;
   }
 }
 
@@ -1015,4 +1296,832 @@ button[type="submit"]:disabled {
 .back-button:hover {
   background-color: #f3f4f6;
   color: #111827;
+}
+
+/* Update the chat-header h2 styling to match sidebar-header h2 */
+.chat-header h2 {
+  margin: 0;
+  font-size: 0.95rem;  /* Match sidebar font size */
+  font-weight: 600;
+  color: #4b5563;      /* Match sidebar text color */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Feedback UI styling */
+.message-feedback {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.feedback-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 36px;
+  height: 36px;
+}
+
+.feedback-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.feedback-btn.active {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+.feedback-btn.active[title="This response was helpful"] {
+  background-color: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.feedback-btn.active[title="This response could be improved"] {
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.feedback-comment-btn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-comment-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.feedback-comment {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.feedback-comment:hover {
+  background-color: #e5e7eb;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 24px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-modal h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.feedback-modal p {
+  margin-bottom: 16px;
+  color: #6b7280;
+}
+
+.feedback-modal textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.feedback-modal textarea:focus {
+  outline: none;
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.modal-buttons button:not(.primary-button) {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+}
+
+.primary-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+}
+
+.primary-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Dropdown menu for export - hover-based version */
+/* 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+}
+
+.dropdown-content {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-radius: 6px;
+  margin-top: 4px;
+  border: 1px solid #e5e7eb;
+  transition: opacity 0.2s;
+}
+
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #374151;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-content button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-content button:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-content button.danger {
+  color: #ef4444;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dropdown-content button.danger:hover {
+  background-color: #fef2f2;
+}
+*/
+
+/* Mobile-specific dropdown fixes */
+@media (max-width: 768px) {
+  .dropdown-content {
+    position: fixed;
+    top: auto;
+    bottom: 60px;
+    right: 16px;
+    left: 16px;
+    width: calc(100% - 32px);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown:focus-within .dropdown-content {
+  display: block;
+}
+
+.dropdown-content button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.dropdown-content button:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-content button.danger {
+  color: #ef4444;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dropdown-content button.danger:hover {
+  background-color: #fef2f2;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.action-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.chat-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.export-button {
+  background-color: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.export-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Add this to App.css to hide any debug elements */
+.debug-code {
+  display: none !important;
+}
+
+/* Update the mobile-menu-toggle to match export-button */
+.mobile-menu-toggle {
+  background-color: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  fill: none;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Make sure all header buttons have consistent styling */
+.chat-header button,
+.export-button,
+.clear-button,
+.mobile-menu-toggle {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style the settings as a list item */
+.settings-list-item {
+  padding: 12px 16px;
+  margin: 0 0 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  margin-top: auto; /* Push it to the bottom */
+  /* border-top: 1px solid #e5e7eb; */
+  padding-top: 16px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.settings-list-item:hover {
+  background-color: #f3f4f6;
+}
+
+.dark-mode .settings-list-item:hover {
+  background-color: #333333;
+}
+
+/* Replace hardcoded colors */
+.settings-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--chat-item-color);
+}
+
+.settings-item svg {
+  color: var(--chat-item-color);
+}
+
+/* Make the new-chat-btn styles more specific to override other header button styles */
+.chat-header .new-chat-btn {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  width: auto !important; /* Override fixed width */
+  height: auto !important; /* Override fixed height */
+}
+
+.chat-header .new-chat-btn:hover {
+  background-color: #2563eb !important;
+}
+
+.chat-header .new-chat-btn svg {
+  stroke: white !important;
+}
+
+/* For mobile */
+@media (max-width: 768px) {
+  .chat-header .new-chat-btn {
+    padding: 6px 8px !important;
+  }
+}
+
+/* Add theme toggle styles */
+.theme-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--button-bg);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.toggle-label:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-label {
+  background-color: var(--primary-button-bg);
+}
+
+input:checked + .toggle-label:before {
+  transform: translateX(26px);
+}
+
+.toggle-text {
+  font-size: 0.9rem;
+}
+
+/* Add visual cue when switching themes */
+.App {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Chat toggle in header for dark/light mode */
+.theme-toggle-btn {
+  cursor: pointer;
+}
+
+/* Dark mode active element states */
+.dark-mode button:focus,
+.dark-mode input:focus,
+.dark-mode textarea:focus,
+.dark-mode select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Add placeholder styling */
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Make sure new chat button is visible in dark mode */
+.dark-mode .new-chat-btn {
+  background-color: #3b82f6 !important;
+}
+
+/* Improve visibility of active elements */
+.dark-mode .chat-item:hover {
+  background-color: #333333;
+}
+
+/* Update these additional elements for dark mode */
+
+/* Chat messages */
+.dark-mode .message.user .message-content {
+  background-color: var(--message-user-bg);
+  color: white;
+}
+
+.dark-mode .message.assistant .message-content {
+  background-color: var(--message-assistant-bg);
+  color: var(--text-color);
+}
+
+/* Settings panel */
+.dark-mode .settings-panel {
+  background-color: var(--bg-color);
+}
+
+.dark-mode .settings-panel h2 {
+  color: var(--text-color);
+}
+
+/* Form elements */
+.dark-mode input, 
+.dark-mode textarea, 
+.dark-mode select {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-color: var(--input-border);
+}
+
+.dark-mode input:focus, 
+.dark-mode textarea:focus, 
+.dark-mode select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Buttons */
+.dark-mode .file-upload-label {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--border-color);
+}
+
+.dark-mode .file-upload-label:hover {
+  background-color: #4b5563;
+}
+
+/* Chat header */
+.dark-mode .chat-header {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode .chat-header h2 {
+  color: var(--text-color);
+}
+
+/* Action buttons */
+.dark-mode .mobile-menu-toggle,
+.dark-mode .export-button,
+.dark-mode .clear-button,
+.dark-mode .chat-header button {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode .mobile-menu-toggle:hover,
+.dark-mode .export-button:hover,
+.dark-mode .clear-button:hover,
+.dark-mode .chat-header button:hover {
+  background-color: #4b5563;
+}
+
+/* Modals */
+.dark-mode .modal-content {
+  background-color: var(--modal-bg);
+  color: var(--text-color);
+}
+
+.dark-mode .modal-buttons button:not(.primary-button) {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* Chat history */
+.dark-mode .chat-history {
+  background-color: var(--bg-color);
+}
+
+/* Guidelines section */
+.dark-mode .guidelines-list {
+  background-color: var(--message-assistant-bg);
+  border-color: var(--border-color);
+}
+
+.dark-mode .guideline-item {
+  border-color: var(--border-color);
+}
+
+.dark-mode .guideline-item button {
+  background-color: var(--button-bg);
+  color: var(--text-color);
+}
+
+/* Selected files */
+.dark-mode .selected-files {
+  background-color: var(--message-assistant-bg);
+  border-color: var(--border-color);
+}
+
+.dark-mode .selected-files p,
+.dark-mode .selected-files li {
+  color: var(--text-color);
+}
+
+/* Debug section */
+.dark-mode .debug-section {
+  border-color: var(--border-color);
+}
+
+.dark-mode .debug-header {
+  background-color: var(--message-assistant-bg);
+}
+
+.dark-mode .debug-header h3 {
+  color: var(--text-color);
+}
+
+.dark-mode .debug-content {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.dark-mode .debug-content code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+
+.dark-mode .debug-content p,
+.dark-mode .debug-content li {
+  color: var(--text-color);
+}
+
+/* Markdown content */
+.dark-mode .markdown-content h1,
+.dark-mode .markdown-content h2,
+.dark-mode .markdown-content h3,
+.dark-mode .markdown-content h4,
+.dark-mode .markdown-content h5,
+.dark-mode .markdown-content h6 {
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode .markdown-content pre {
+  background-color: var(--code-bg);
+}
+
+.dark-mode .markdown-content pre code {
+  color: var(--code-text);
+}
+
+.dark-mode .markdown-content code {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--code-text);
+}
+
+.dark-mode .markdown-content blockquote {
+  border-color: var(--border-color);
+  color: #9ca3af;
+}
+
+.dark-mode .markdown-content a {
+  color: #60a5fa;
+}
+
+.dark-mode .markdown-content table th,
+.dark-mode .markdown-content table td {
+  border-color: var(--border-color);
+}
+
+.dark-mode .markdown-content table th {
+  background-color: var(--message-assistant-bg);
+}
+
+/* Chat items */
+.dark-mode .chat-item.active {
+  background-color: var(--active-chat-bg);
+  border-left: 3px solid var(--active-chat-border);
+}
+
+.dark-mode .chat-item.active .chat-item-title {
+  color: var(--active-chat-color);
+}
+
+/* Feedback UI */
+.dark-mode .message-feedback {
+  border-top-color: var(--border-color);
+}
+
+.dark-mode .feedback-btn {
+  background-color: var(--button-bg);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.dark-mode .feedback-btn:hover {
+  background-color: #4b5563;
+}
+
+.dark-mode .feedback-btn.active[title="This response was helpful"] {
+  background-color: rgba(52, 211, 153, 0.2); /* Based on --success-color */
+  border-color: var(--success-color);
+  color: var(--success-color);
+}
+
+.dark-mode .feedback-btn.active[title="This response could be improved"] {
+  background-color: rgba(248, 113, 113, 0.2); /* Based on --error-color */
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+/* Scrollbars - Webkit browsers */
+.dark-mode ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Make hover states consistent using variables */
+.dark-mode .mobile-menu-toggle:hover,
+.dark-mode .export-button:hover,
+.dark-mode .clear-button:hover,
+.dark-mode .chat-header button:hover,
+.dark-mode .file-upload-label:hover,
+.dark-mode .feedback-btn:hover,
+.dark-mode .guideline-item button:hover {
+  background-color: var(--hover-button-bg);
+  color: var(--hover-button-color);
+}
+
+/* Make code syntax highlighting more consistent in dark mode */
+.dark-mode .markdown-content code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+
+.dark-mode .markdown-content a {
+  color: var(--primary-button-bg);
+}
+
+.dark-mode .markdown-content blockquote {
+  border-color: var(--border-color);
+  color: var(--chat-item-color);
+}
+
+/* Consistent form styling */
+.dark-mode .form-group label {
+  color: var(--text-color);
+}
+
+.dark-mode .field-help {
+  color: var(--chat-item-color);
+}
+
+.dark-mode .label-hint {
+  color: var(--chat-item-color);
+}
+
+/* Make modal content consistent */
+.dark-mode .modal-content h3 {
+  color: var(--text-color);
+}
+
+.dark-mode .modal-content p {
+  color: var(--chat-item-color);
+}
+
+body, .App, .chat-sidebar, .main-content, .chat-header, .message-content,
+input, textarea, select, button, .settings-panel, .modal-content {
+  transition: background-color var(--transition-speed) ease-in, 
+              color var(--transition-speed) ease-in,
+              border-color var(--transition-speed) ease-in;
 }
