@@ -260,16 +260,7 @@ input:focus {
   padding: 16px;
   border-bottom: 1px solid #e5e7eb;
   background-color: #ffffff;
-}
-
-.chat-header h2 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #111827;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  height: 56px; /* Fixed height to match sidebar header */
 }
 
 .clear-button {
@@ -699,7 +690,38 @@ button[type="submit"]:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f9fafb;
+}
+
+.settings-button {
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.sidebar-subheader {
+  padding: 12px 16px;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-subheader h2 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
 }
 
 .sidebar-header h2 {
